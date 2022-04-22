@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+
+  notejam-db:
+    image: mysql:5.7
+    restart: "always"
+    environment:
+      MYSQL_ROOT_PASSWORD: "Pass@123"
+    ports:
+      - "3306:3306"
+    volumes:
+      - "./sql:/docker-entrypoint-initdb.d"
+
+  notejam-app:
+    restart: "always"
+    image: "nodejs-docker:0.0.2"
+    depends_on:
+      - "db"
+    env_file: .env
+    environment:
+      MYSQL_HOST: "notejam-db"
+      MYSQL_ROOT_PASSWORD: "Pass@123"
+      MYSQL_TCP_PORT: "3306"
+      NODE_ENV: "${NODE_ENV}"
+      NOTEJAM_HOST: "notejam-app"
+      NOTEJAM_PORT: "8080"
+    ports:
+      - "8080:8080"
+     
+volumes:
+  sql:
+  notejam:
